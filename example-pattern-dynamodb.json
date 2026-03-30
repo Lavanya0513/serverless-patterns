@@ -1,0 +1,61 @@
+{
+  "title": "Amazon API Gateway, AWS Lambda Authorizer & DynamoDB for API Key Authentication",
+  "description": "Implement a secure API key-based authorization system using Amazon API Gateway, AWS Lambda Authorizer, and Amazon DynamoDB for tenant-to-API-key mapping.",
+
+  "language": "TypeScript",
+  "level": "200",
+  "framework": "AWS CDK",
+  "introBox": {
+    "headline": "How it works",
+    "text": [
+      "This pattern demonstrates how to implement a secure API key-based authorization system using Amazon API Gateway, Lambda Authorizer, and Amazon DynamoDB.",
+      "A DynamoDB table stores the mapping between tenant IDs and API keys. The Lambda authorizer derives the tenant ID from the authorization token and queries DynamoDB to retrieve the corresponding API key.",
+      "The authorizer returns a policy document with the usageIdentifierKey set to the API key, enabling API Gateway usage plan integration.",
+      "The API Gateway then allows or denies access to the protected endpoint based on the policy returned by the authorizer."
+    ]
+  },
+  "gitHub": {
+    "template": {
+      "repoURL": "https://github.com/aws-samples/serverless-patterns/tree/main/apigw-dynamodb-apikey-cdk",
+      "templateURL": "serverless-patterns/apigw-dynamodb-apikey-cdk",
+      "projectFolder": "apigw-dynamodb-apikey-cdk",
+      "templateFile": "lib/apigw-dynamodb-apikey-stack.ts"
+    }
+  },
+  "resources": {
+    "bullets": [
+      {
+        "text": "Lambda Authorizers for Amazon API Gateway",
+        "link": "https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-use-lambda-authorizer.html"
+      },
+      {
+        "text": "Amazon DynamoDB Developer Guide",
+        "link": "https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Introduction.html"
+      },
+      {
+        "text": "Amazon API Gateway - REST APIs",
+        "link": "https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-rest-api.html"
+      },
+      {
+        "text": "API Gateway Usage Plans",
+        "link": "https://docs.aws.amazon.com/apigateway/latest/developerguide/api-gateway-api-usage-plans.html"
+      }
+    ]
+  },
+  "deploy": {
+    "text": ["npm install", "cdk deploy --app \"npx ts-node --prefer-ts-exts bin/apigw-dynamodb-apikey-cdk.ts\""]
+  },
+  "testing": {
+    "text": [
+      "Insert a tenant mapping into the DynamoDB table: <code>aws dynamodb put-item --table-name TABLE_NAME --item '{\"tenantId\": {\"S\": \"sample-tenant\"}, \"apiKey\": {\"S\": \"my-api-key-123\"}}'</code>",
+      "Make a request to the protected endpoint using the tenant ID: <code>curl -H \"x-tenant-id: sample-tenant\" https://REPLACE_WITH_CREATED_API_URL.amazonaws.com/prod/protected</code>",
+      "If successful, you should receive a response: <code>{ \"message\": \"Access granted\" }</code>"
+    ]
+  },
+  "cleanup": {
+    "text": [
+      "Delete the CDK stack: <code>cdk destroy --app \"npx ts-node --prefer-ts-exts bin/apigw-dynamodb-apikey-cdk.ts\"</code>"
+    ]
+  }
+  
+}
